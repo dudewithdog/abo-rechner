@@ -12,60 +12,62 @@ body {
     padding: 20px;
     line-height: 1.6;
 }
-h1 {
-    font-size: 28px;
-}
-label {
-    display: block;
-    margin-top: 15px;
-}
-input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-}
-.result {
-    margin-top: 25px;
-    font-size: 20px;
-    font-weight: bold;
-}
+h1 { font-size: 26px; }
+label { display: block; margin-top: 15px; }
+input { width: 100%; padding: 8px; margin-top: 5px; }
+.result { margin-top: 25px; font-size: 18px; }
+.highlight { font-weight: bold; font-size: 20px; }
 </style>
 </head>
 <body>
 
-<h1>Abo-Rechner</h1>
+<h1>Finanzierungs-Rechner</h1>
+
+<p><strong>Barpreis:</strong> 4'200 CHF</p>
+<p><strong>Effektiver Jahreszins:</strong> 6.9 %</p>
 
 <label>Anzahlung (CHF)</label>
 <input type="number" id="anzahlung" value="0">
 
-<label>Monatsrate (CHF)</label>
-<input type="number" id="rate" value="139">
-
 <label>Laufzeit (Monate)</label>
 <input type="number" id="laufzeit" value="24">
 
-<label>Pausentage (optional, verlängern die Laufzeit)</label>
+<label>Pausentage (verlängern die Laufzeit)</label>
 <input type="number" id="pausentage" value="0">
 
 <div class="result">
-Gesamtbelastung: <span id="gesamt">0</span> CHF
+<p>Monatsrate: <span id="rate" class="highlight">0</span> CHF</p>
+<p>Gesamtbelastung: <span id="gesamt" class="highlight">0</span> CHF</p>
+<p>Mehrkosten gegenüber Barpreis: <span id="mehrkosten" class="highlight">0</span> CHF</p>
 </div>
 
 <script>
 function berechnen() {
-    let anzahlung = parseFloat(document.getElementById("anzahlung").value) || 0;
-    let rate = parseFloat(document.getElementById("rate").value) || 0;
-    let laufzeit = parseFloat(document.getElementById("laufzeit").value) || 0;
-    let pausentage = parseFloat(document.getElementById("pausentage").value) || 0;
 
-    let effektiveMonate = laufzeit + (pausentage / 30);
-    let gesamt = anzahlung + (rate * effektiveMonate);
+let barpreis = 4200;
+let zinssatz = 0.069;
+let anzahlung = parseFloat(document.getElementById("anzahlung").value) || 0;
+let laufzeit = parseFloat(document.getElementById("laufzeit").value) || 1;
+let pausentage = parseFloat(document.getElementById("pausentage").value) || 0;
 
-    document.getElementById("gesamt").innerText = gesamt.toFixed(2);
+let finanzierung = barpreis - anzahlung;
+if (finanzierung < 0) finanzierung = 0;
+
+let effektiveMonate = laufzeit + (pausentage / 30);
+let monatlicherZins = zinssatz / 12;
+
+let rate = finanzierung * (monatlicherZins / (1 - Math.pow(1 + monatlicherZins, -effektiveMonate)));
+
+let gesamt = (rate * effektiveMonate) + anzahlung;
+let mehrkosten = gesamt - barpreis;
+
+document.getElementById("rate").innerText = rate.toFixed(2);
+document.getElementById("gesamt").innerText = gesamt.toFixed(2);
+document.getElementById("mehrkosten").innerText = mehrkosten.toFixed(2);
 }
 
 document.querySelectorAll("input").forEach(input => {
-    input.addEventListener("input", berechnen);
+input.addEventListener("input", berechnen);
 });
 
 berechnen();
