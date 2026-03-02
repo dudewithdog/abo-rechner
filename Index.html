@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abo-Rechner</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    line-height: 1.6;
+}
+h1 {
+    font-size: 28px;
+}
+label {
+    display: block;
+    margin-top: 15px;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+.result {
+    margin-top: 25px;
+    font-size: 20px;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h1>Abo-Rechner</h1>
+
+<label>Anzahlung (CHF)</label>
+<input type="number" id="anzahlung" value="0">
+
+<label>Monatsrate (CHF)</label>
+<input type="number" id="rate" value="139">
+
+<label>Laufzeit (Monate)</label>
+<input type="number" id="laufzeit" value="24">
+
+<label>Pausentage (optional, verlängern die Laufzeit)</label>
+<input type="number" id="pausentage" value="0">
+
+<div class="result">
+Gesamtbelastung: <span id="gesamt">0</span> CHF
+</div>
+
+<script>
+function berechnen() {
+    let anzahlung = parseFloat(document.getElementById("anzahlung").value) || 0;
+    let rate = parseFloat(document.getElementById("rate").value) || 0;
+    let laufzeit = parseFloat(document.getElementById("laufzeit").value) || 0;
+    let pausentage = parseFloat(document.getElementById("pausentage").value) || 0;
+
+    let effektiveMonate = laufzeit + (pausentage / 30);
+    let gesamt = anzahlung + (rate * effektiveMonate);
+
+    document.getElementById("gesamt").innerText = gesamt.toFixed(2);
+}
+
+document.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", berechnen);
+});
+
+berechnen();
+</script>
+
+</body>
+</html>
